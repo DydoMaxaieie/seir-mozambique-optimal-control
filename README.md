@@ -19,4 +19,57 @@ for the Master's dissertation:
 > Universidade Eduardo Mondlane,
 > Maputo, Moçambique.
 
-## Repository Structure# seir-mozambique-optimal-control
+## Repository Structure
+
+```
+R/
+├── cap3/
+│   ├── figuras_escalar.R
+│   ├── calibracao_seir.R
+│   └── figuras_seir.R
+└── cap5/
+    ├── seir_meta.R
+    ├── figuras_meta.R
+    ├── mapa_corredor_n1.R
+    └── sensibilidade_R0.R
+dados/
+├── covid_moz_Q1_2021.csv
+└── n1_real.gpkg
+```
+
+## Requirements
+
+R >= 4.0 and the following packages:
+
+```r
+install.packages(c(
+  "ggplot2", "dplyr", "tidyr",
+  "scales", "patchwork", "sf",
+  "rnaturalearth", "ggrepel",
+  "ggspatial", "cowplot",
+  "httr", "jsonlite"
+))
+```
+
+## Reproduction
+
+Run scripts in this order:
+
+1. `R/cap5/seir_meta.R` — calibration
+   and simulation (~15 min)
+2. `R/cap5/figuras_meta.R` — figures
+   (~8 min)
+3. `R/cap5/mapa_corredor_n1.R` — map
+   (~3 min)
+4. `R/cap5/sensibilidade_R0.R` —
+   sensitivity analysis (~2 min)
+
+## License
+
+MIT License — see `LICENSE` file.
+
+## Author
+
+Dário Rogério Júlio Maxaieie  
+Universidade Eduardo Mondlane  
+Maputo, Moçambique
