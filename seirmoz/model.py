@@ -7,6 +7,14 @@ N, C, Th, ag = _d["N"], _d["C"], _d["Th"], _d["ag"]
 K, G = N.shape
 TE, TI, TQ, THW, THC, TV, EFF, OMEGA = 5.2, 10.0, 7.0, 8.0, 12.0, 14.0, 0.70, 0.5
 Nhat = Th.T @ N.sum(1)
+Nhat_g = Th.T @ N  # população presente por região e grupo etário (K x G)
+NORM = 'total'  # 'total': denominador N̂_m (dissertação); 'idade': N̂_{mh} (convenção padrão)
+
+
+def set_norm(mode):
+    global NORM
+    assert mode in ('total', 'idade')
+    NORM = mode
 W = (Th / Nhat[None, :]) @ Th.T  # W_kl = sum_m th_km th_lm / Nhat_m
 IDX = dict(Su=0, Sv=1, Sp=2, E=3, I=4, Q=5, Hw=6, Hc=7, R=8, RH=9, D=10, DH=11, Vw=12)
 
@@ -35,7 +43,7 @@ mu_c = fc / ((1 - fc) * THC)
 
 
 def lam_f(I, u, beta):
-    prev = (Th.T @ I) / Nhat[:, None]
+    prev = (Th.T @ I) / (Nhat_g if NORM == 'idade' else Nhat[:, None])
     return (1 - u) * beta[:, None] * (Th @ (prev @ C.T))
 
 
@@ -65,7 +73,10 @@ def adj_rhs(L, x, v, u, beta, kappa, A, AH):
     lam = lam_f(I, u, beta)
     Psi = (LE - LSu) * Su + (LE - LSv) * Sv + (1 - OMEGA) * (LE - LSp) * Sp
     M = Psi * (1 - u) * beta[:, None]
-    Xi = W.T @ (M @ C)  # Xi_lh, eq. (4.48)
+    if NORM == 'idade':
+        Xi = Th @ ((Th.T @ (M @ C)) / Nhat_g)
+    else:
+        Xi = W.T @ (M @ C)  # Xi_lh, eq. (4.48)
     dL = np.empty_like(L)
     dL[0] = (lam + v) * LSu - lam * LE - v * LSv - v * LV
     dL[1] = (lam + 1 / TV) * LSv - lam * LE - (1 - EFF) / TV * LSp - EFF / TV * LR

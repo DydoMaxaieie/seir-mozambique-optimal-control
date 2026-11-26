@@ -19,6 +19,12 @@ Modelo: 4 macrorregiões x 5 grupos etários x 13 compartimentos (260 EDO), mobi
 | `scripts/04_verificacoes_cap6.py` | Gradiente vs diferenças finitas, 40 perturbações, convergência em h | 6 e Apêndice B | ~2 min |
 | `scripts/05a_figuras_cap3.py` | Figuras do Capítulo 3 | 3 | segundos |
 | `scripts/06_louvain.py` | Agrupamento de Louvain (200 sementes) | 4 | segundos |
+| `scripts/07_calibracao_idade.py`, `08_controlo_idade.py`, `09_verificacao_idade.py`, `11_sensibilidade_idade.py` | Calibração, controlo, verificação e sensibilidade com o denominador N̂_mh | Resultados (normalização) | minutos |
+| `scripts/10_horizonte.py` | Horizontes de 120 a 300 dias e óbitos aos 600 dias | Resultados (horizonte) | ~10 min |
+| `scripts/12_validacao_previsao.py` | Validação fora da amostra a 14 dias | Resultados (validação) | ~2 min |
+| `scripts/13_vacinacao_estratos.py` | Doses, cobertura e distanciamento por região e idade | Resultados (estratos) | segundos |
+| `scripts/14_robustez_controlo.py ic` ou `clin` | Condições iniciais do FBS; eficácia vacinal e parâmetros clínicos | Resultados (robustez) | ~1 min |
+| `scripts/15_matriz_reciproca.py cal` ou `ctl` | Matriz de contactos recíproca: recalibração e controlo | Resultados (robustez) | ~3 min |
 
 Teste de regressão: `pytest -q`.
 

@@ -44,6 +44,14 @@ for k, r in enumerate(regs):
     for c in idx(cuts[r]):
         seg[k, c:] += 1
 Nhat = Th.T @ N.sum(1)  # população presente em cada região
+Nhat_g = Th.T @ N
+NORM = 'total'
+
+
+def set_norm(mode):
+    global NORM
+    assert mode in ('total', 'idade')
+    NORM = mode
 
 
 def sim(beta, rho, a=None, imm0=None):
@@ -60,7 +68,7 @@ def sim(beta, rho, a=None, imm0=None):
     def f(t, x):
         S = x[:n].reshape(K, G); E = x[n:2 * n].reshape(K, G); I = x[2 * n:].reshape(K, G)
         b = beta[np.arange(K), seg[:, min(int(t), T - 1)]]
-        prev = (Th.T @ I) / Nhat[:, None]
+        prev = (Th.T @ I) / (Nhat_g if NORM == 'idade' else Nhat[:, None])
         lam = b[:, None] * (Th @ (prev @ C.T))
         new = lam * S
         return np.r_[(-new).ravel(), (new - E / TE).ravel(), (E / TE - I / TI).ravel()]
@@ -110,5 +118,10 @@ def R0_block(k, bk):
     return TI * max(abs(np.linalg.eigvals(M)))
 
 
+def calib_dir():
+    return CALIB if NORM == 'total' else CALIB.parent / 'calibracao_idade'
+
+
 def load_params(rho):
-    return np.load(CALIB / f"beta_rho{rho}.npy"), np.load(CALIB / f"a_rho{rho}.npy")
+    d = calib_dir()
+    return np.load(d / f"beta_rho{rho}.npy"), np.load(d / f"a_rho{rho}.npy")
